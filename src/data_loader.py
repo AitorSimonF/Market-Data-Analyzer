@@ -1,3 +1,5 @@
+import pandas as pd
+
 # Handles reading CSVs, basic validation."""'data_loader.py
 """
 Purpose: Load historical market data from CSV files.
@@ -11,18 +13,25 @@ Return clean DataFrame with Datetimeindex
 
 def load_market_data(filepath, date_column = 'Date', price_column = 'Adj Close'):
 
-    """
+    '''
     Load historical market data from CSV.
 
-    Parameters:
-    -----------
-    filepath : str
-        path to the CSV file
-    Date_column : str, default = 'Date'
-        Name of the column containing dates
-    price_column : str, default = 'Adj Close'
-        Name of the column containing prices.
+    '''
 
+    df = pd.read_csv(filepath)  # Reads CSV using filepath parameter.       
+
+    if date_column not in df.columns:  # Checks if date_column is in the CSV.
+        raise ValueError(f"Date column '{date_column}' not found in CSV.")
+
+    if price_column not in df.columns:  # Checks if price_column is in the CSV.
+        raise ValueError(f"Price column '{price_column}' not found in CSV.")
+
+    df['Date'] = pd.to_datetime(df[date_column])  # Converts date_column to datetime.
+    df = df.set_index('Date')  # Sets date_column as index.
+    df = df[[price_column]]  # Selects price_column.
+
+    return df
+"""
     Returns:
     --------
     pandas.DataFrame
@@ -30,5 +39,4 @@ def load_market_data(filepath, date_column = 'Date', price_column = 'Adj Close')
         - Columns: Asset Price(s)
         - Clean, ready for analysis.
     
-    """
-    pass
+"""   
