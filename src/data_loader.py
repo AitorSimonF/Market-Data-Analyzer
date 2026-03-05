@@ -11,7 +11,7 @@ Responsibilities:
 Return clean DataFrame with Datetimeindex
 """
 
-def load_market_data(filepath, date_column = 'Date', price_column = 'Adj Close'):
+def load_market_data(filepath, date_column = 'Date', price_column = 'Close/Last'):
 
     '''
     Load historical market data from CSV.
