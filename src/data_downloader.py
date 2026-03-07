@@ -4,56 +4,24 @@ from pathlib import Path
 
 
 def download_market_data(ticker, start_date, end_date, save_dir='data/raw'):
-    """
-    Download historical market data from Yahoo Finance and save to CSV.
     
-    Parameters:
-    -----------
-    ticker : str
-        Stock ticker symbol (e.g., 'AAPL', 'SPY', 'TSLA')
-    start_date : str
-        Start date in 'YYYY-MM-DD' format
-    end_date : str
-        End date in 'YYYY-MM-DD' format
-    save_dir : str, default='data/raw'
-        Directory to save the CSV file
+    # Step 1: Download Data
+    df= yf.download(ticker, start=start_date, end=end_date) #downloads the ticker data from start to end.
     
-    Returns:
-    --------
-    str
-        Path to the saved CSV file
-    
-    What This Function Needs To Do:
-    --------------------------------
-    1. Use yfinance to download data for the ticker
-    2. Validate that data was successfully downloaded
-    3. Ensure column names are standardized:
-       - 'Date' (as index)
-       - 'Adj Close' (adjusted closing price)
-       - 'Volume', 'Open', 'High', 'Low' (optional, but standardized)
-    4. Create the save directory if it doesn't exist
-    5. Save to CSV with filename format: {ticker}.csv
-    6. Return the filepath so user knows where it was saved
-    
-    Research Tasks for Next Session:
-    ---------------------------------
-    Task 1: How to use yfinance.download()
-    - Google: "yfinance download historical data"
-    - Find: Basic syntax, required parameters
-    
-    Task 2: How yfinance returns data
-    - What data structure does it return? (DataFrame? Series?)
-    - What are the default column names?
-    
-    Task 3: How to create directories in Python
-    - Google: "python pathlib create directory if not exists"
-    - Find: How to ensure save_dir exists before saving
-    
-    Task 4: How to save DataFrame to CSV
-    - You know pd.read_csv(), now find the reverse operation
-    - Google: "pandas save dataframe to csv"
-    """
-    pass
+    # Step 2: Validate Data
+    if df.empty:    #If dataframe empty = True, raise an error
+        raise ValueError(f"No data found for ticker: '{ticker}'. Check if ticker is valid.")
+
+    # Step 3: Create/Ensure directory path
+    dir_path = Path(save_dir) # Saves path as save_dir
+    dir_path.mkdir(parents=True, exist_ok=True) # Creates the FOLDER 'data/raw'
+
+    # Step 3b: Create file path
+    file_path = dir_path / f"{ticker}.csv" # Path('data/raw/AAPL.csv')
+
+    #Step 4: Save to CSV
+    df.to_csv(file_path, index=True)
+    return str(file_path) # Returns the path as a string 'data/raw/AAPL.csv'
 
 
 # Optional: Function to download multiple tickers at once
